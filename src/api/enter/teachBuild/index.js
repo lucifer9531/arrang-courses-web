@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function add(data) {
   return request({
-    url: 'api/jobs',
+    url: 'api/teachBuild',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function add(data) {
 
 export function del(ids) {
   return request({
-    url: 'api/jobs',
+    url: 'api/teachBuild',
     method: 'delete',
     data: ids
   })
@@ -18,24 +18,17 @@ export function del(ids) {
 
 export function edit(data) {
   return request({
-    url: 'api/jobs',
+    url: 'api/teachBuild',
     method: 'put',
     data
   })
 }
 
-export function updateIsPause(id) {
+export function getAllTeachBuild() {
   return request({
-    url: 'api/jobs/' + id,
-    method: 'put'
+    url: 'api/teachBuild/all',
+    method: 'get'
   })
 }
 
-export function execution(id) {
-  return request({
-    url: 'api/jobs/exec/' + id,
-    method: 'put'
-  })
-}
-
-export default { del, updateIsPause, execution, add, edit }
+export default { add, edit, del }

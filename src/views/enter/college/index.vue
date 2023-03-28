@@ -12,8 +12,11 @@
     <!--表单组件-->
     <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="650px">
       <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="100px">
-        <el-form-item label="编号" prop="classroomNo">
-          <el-input v-model="form.classroomNo" placeholder="请输入教室编码" style="width: 180px" />
+        <el-form-item label="编号" prop="collegeNo">
+          <el-input v-model="form.collegeNo" placeholder="请输入教室编码" style="width: 180px" />
+        </el-form-item>
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="form.name" placeholder="请输入名称" style="width: 180px" />
         </el-form-item>
         <el-form-item label="所处教学区" prop="teachBuild">
           <el-select v-model="form.teachBuild" value-key="id" style="width: 180px;" placeholder="请选择教学区">
@@ -24,12 +27,6 @@
               :label="item.name"
             />
           </el-select>
-        </el-form-item>
-        <el-form-item label="教室容量" prop="capacity">
-          <el-input-number v-model="form.capacity" controls-position="right" style="width: 180px;" />
-        </el-form-item>
-        <el-form-item label="属性">
-          <el-input v-model="form.classroomAttr" placeholder="请输入教室属性" style="width: 180px" />
         </el-form-item>
         <el-form-item label="备注">
           <el-input v-model="form.remarks" type="textarea" placeholder="请输入备注" style="width: 180px" />
@@ -43,17 +40,21 @@
     <!--表格渲染-->
     <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%" @selection-change="crud.selectionChangeHandler">
       <el-table-column show-overflow-tooltip align="center" type="selection" width="55" />
-      <el-table-column show-overflow-tooltip align="center" prop="classroomNo" label="编码" />
-      <el-table-column show-overflow-tooltip align="center" prop="capacity" label="容量" />
+      <el-table-column show-overflow-tooltip align="center" prop="collegeNo" label="编码" />
+      <el-table-column show-overflow-tooltip align="center" prop="name" label="名称" />
       <el-table-column show-overflow-tooltip align="center" prop="teachBuild" label="所属教学区">
         <template slot-scope="scope">
           <span>{{ scope.row.teachBuild.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip align="center" prop="classroomAttr" label="属性" />
+      <el-table-column show-overflow-tooltip align="center" prop="teachers" label="教师">
+        <template slot-scope="scope">
+          <span>{{ scope.row | teachersFilter }}</span>
+        </template>
+      </el-table-column>
       <el-table-column show-overflow-tooltip align="center" prop="remarks" label="备注" />
       <el-table-column show-overflow-tooltip align="center" prop="createTime" label="创建日期" />
-      <el-table-column v-if="checkPer(['admin','classroom:edit','classroom:del'])" label="操作" width="150px" align="center">
+      <el-table-column v-if="checkPer(['admin','collage:edit','collage:del'])" label="操作" width="150px" align="center">
         <template slot-scope="scope">
           <udOperation
             :data="scope.row"
@@ -68,7 +69,7 @@
 </template>
 
 <script>
-import crudClassroom from '@/api/enter/classroom'
+import crudCollege from '@/api/enter/college'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
@@ -76,28 +77,37 @@ import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 import DateRangePicker from '@/components/DateRangePicker'
 import { getAllTeachBuild } from '@/api/enter/teachBuild'
-const defaultForm = { id: null, classroomNo: null, teachBuild: null, capacity: 999, classroomAttr: null, remarks: null }
+const defaultForm = { id: null, collegeNo: null, teachBuild: null, name: '', remarks: null }
 export default {
-  name: 'Classroom',
+  name: 'College',
   components: { pagination, crudOperation, rrOperation, udOperation, DateRangePicker },
   cruds() {
-    return CRUD({ title: '教室', url: 'api/classroom', crudMethod: { ...crudClassroom }})
+    return CRUD({ title: '学院', url: 'api/college', crudMethod: { ...crudCollege }})
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
+  // eslint-disable-next-line vue/order-in-components
+  filters: {
+    teachersFilter(data) {
+      const temp = []
+      if (!data.teachers.length) return ''
+      data.teachers.forEach(item => temp.push(item.name))
+      return temp.join(',')
+    }
+  },
   data() {
     return {
       teachBuildOptions: [],
       permission: {
-        add: ['admin', 'classroom:add'],
-        edit: ['admin', 'classroom:edit'],
-        del: ['admin', 'classroom:del']
+        add: ['admin', 'collage:add'],
+        edit: ['admin', 'collage:edit'],
+        del: ['admin', 'collage:del']
       },
       rules: {
-        classroomNo: [
+        collegeNo: [
           { required: true, message: '请输入编码', trigger: 'blur' }
         ],
-        capacity: [
-          { required: true, message: '请输入教室容量', trigger: 'blur', type: 'number' }
+        name: [
+          { required: true, message: '请输入学院名称', trigger: 'blur' }
         ],
         teachBuild: [
           { required: true, message: '请选择所属教学区', trigger: 'change' }

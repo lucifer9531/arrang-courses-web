@@ -29,27 +29,8 @@
         <el-form-item label="名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入名称" style="width: 180px;" />
         </el-form-item>
-        <el-form-item label="出版社">
-          <el-input v-model="form.publisher" placeholder="请输入出版社" style="width: 180px;" />
-        </el-form-item>
-        <el-form-item label="课程状态" prop="status">
-          <el-select v-model="form.status" placeholder="请选择课程状态" style="width: 180px;">
-            <el-option
-              v-for="item in dict.course_status"
-              :key="item.id"
-              :value="item.value"
-              :label="item.label"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="优先级">
-          <el-input-number v-model.number="form.level" controls-position="right" placeholder="请输入优先级" style="width: 180px" />
-        </el-form-item>
-        <el-form-item label="学时">
-          <el-input-number v-model.number="form.hour" controls-position="right" placeholder="请输入学时" style="width: 180px" />
-        </el-form-item>
-        <el-form-item label="学分">
-          <el-input-number v-model.number="form.credit" controls-position="right" placeholder="请输入学分" style="width: 180px" />
+        <el-form-item label="属性" prop="courseAttr">
+          <el-input v-model="form.courseAttr" placeholder="请输入属性" style="width: 180px" />
         </el-form-item>
         <el-form-item label="备注">
           <el-input v-model="form.remarks" type="textarea" placeholder="请输入备注" style="width: 180px" />
@@ -70,15 +51,7 @@
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip align="center" prop="name" label="名称" />
-      <el-table-column show-overflow-tooltip align="center" prop="publisher" label="出版社" />
-      <el-table-column show-overflow-tooltip align="center" prop="status" label="课程状态">
-        <template slot-scope="scope">
-          <span>{{ dict.label.course_status[scope.row.status] }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip align="center" prop="level" label="优先级" />
-      <el-table-column show-overflow-tooltip align="center" prop="hour" label="学时" />
-      <el-table-column show-overflow-tooltip align="center" prop="credit" label="学分" />
+      <el-table-column show-overflow-tooltip align="center" prop="courseAttr" label="属性" />
       <el-table-column show-overflow-tooltip align="center" prop="remarks" label="备注" />
       <el-table-column show-overflow-tooltip align="center" prop="createTime" label="创建日期" />
       <el-table-column v-if="checkPer(['admin','course:edit','course:del'])" label="操作" width="150px" align="center">
@@ -103,7 +76,7 @@ import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 import DateRangePicker from '@/components/DateRangePicker'
-const defaultForm = { id: null, courseNo: null, type: null, name: null, publisher: null, status: null, level: null, hour: 60, credit: 60, remarks: null }
+const defaultForm = { id: null, courseNo: null, type: null, name: null, courseAttr: null, remarks: null }
 export default {
   name: 'Course',
   components: { pagination, crudOperation, rrOperation, udOperation, DateRangePicker },
@@ -129,8 +102,8 @@ export default {
         type: [
           { required: true, message: '请选择课程类型', trigger: 'change' }
         ],
-        status: [
-          { required: true, message: '请选择课程状态', trigger: 'change' }
+        courseAttr: [
+          { required: true, message: '请输入课程属性', trigger: 'blur' }
         ]
       }
     }

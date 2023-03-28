@@ -18,16 +18,6 @@
         <el-form-item label="名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入教学区名称" style="width: 370px" />
         </el-form-item>
-        <el-form-item label="位置" prop="location">
-          <el-select v-model="form.location" style="width: 370px;" placeholder="请选择位置">
-            <el-option
-              v-for="item in locationOptions"
-              :key="item.id"
-              :value="item.id"
-              :label="item.name"
-            />
-          </el-select>
-        </el-form-item>
         <el-form-item label="备注">
           <el-input v-model="form.remarks" type="textarea" placeholder="请输入备注" style="width: 370px" />
         </el-form-item>
@@ -42,14 +32,9 @@
       <el-table-column show-overflow-tooltip align="center" type="selection" width="55" />
       <el-table-column show-overflow-tooltip align="center" prop="teachBuildNo" label="编码" />
       <el-table-column show-overflow-tooltip align="center" prop="name" label="名称" />
-      <el-table-column show-overflow-tooltip align="center" prop="location" label="所在位置">
+      <el-table-column show-overflow-tooltip align="center" prop="classroom" label="学院">
         <template slot-scope="scope">
-          <span>{{ scope.row.location.name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip align="center" prop="classroom" label="教室">
-        <template slot-scope="scope">
-          <span>{{ scope.row | classroomFilter }}</span>
+          <span>{{ scope.row | collegeFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip align="center" prop="remarks" label="备注" />
@@ -79,7 +64,6 @@ import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 import DateRangePicker from '@/components/DateRangePicker'
-import { getAllLocation } from '@/api/enter/location'
 
 const defaultForm = { id: null, teachBuildNo: null, location: null, remarks: '', name: null }
 export default {
@@ -104,31 +88,17 @@ export default {
         ],
         name: [
           { required: true, message: '请输入班级名称', trigger: 'blur' }
-        ],
-        location: [
-          { required: true, message: '请选择位置', trigger: 'change' }
         ]
       }
     }
   },
   // eslint-disable-next-line vue/order-in-components
   filters: {
-    classroomFilter(data) {
+    collegeFilter(data) {
       const temp = []
-      if (!data.classroom.length) return ''
-      data.classroom.forEach(item => temp.push(item.name))
+      if (!data.colleges.length) return ''
+      data.colleges.forEach(item => temp.push(item.name))
       return temp.join(',')
-    }
-  },
-  mounted() {
-    this.getAllLocation()
-  },
-  methods: {
-    async getAllLocation() {
-      this.locationOptions = await getAllLocation()
-    },
-    [CRUD.HOOK.beforeSubmit]() {
-      this.form.location = { id: this.form.location }
     }
   }
 }

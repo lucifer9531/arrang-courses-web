@@ -12,27 +12,27 @@
     <!--表单组件-->
     <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="650px">
       <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="100px">
-        <el-form-item label="编号" prop="classroomNo">
-          <el-input v-model="form.classroomNo" placeholder="请输入教室编码" style="width: 180px" />
+        <el-form-item label="编号" prop="teacherNo">
+          <el-input v-model="form.teacherNo" placeholder="请输入教师编码" style="width: 180px" />
         </el-form-item>
-        <el-form-item label="所处教学区" prop="teachBuild">
-          <el-select v-model="form.teachBuild" value-key="id" style="width: 180px;" placeholder="请选择教学区">
+        <el-form-item label="名字" prop="name">
+          <el-input v-model="form.name" placeholder="请输入教师名字" style="width: 180px" />
+        </el-form-item>
+        <el-form-item label="所处学院" prop="college">
+          <el-select v-model="form.college" value-key="id" style="width: 180px;" placeholder="请选择学院">
             <el-option
-              v-for="item in teachBuildOptions"
+              v-for="item in collegeOptions"
               :key="item.id"
               :value="item"
               :label="item.name"
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="教室容量" prop="capacity">
-          <el-input-number v-model="form.capacity" controls-position="right" style="width: 180px;" />
+        <el-form-item label="年龄">
+          <el-input-number v-model="form.age" controls-position="right" style="width: 180px;" />
         </el-form-item>
-        <el-form-item label="属性">
-          <el-input v-model="form.classroomAttr" placeholder="请输入教室属性" style="width: 180px" />
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="form.remarks" type="textarea" placeholder="请输入备注" style="width: 180px" />
+        <el-form-item label="头衔">
+          <el-input v-model="form.title" placeholder="请输入教室属性" style="width: 180px" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -43,17 +43,17 @@
     <!--表格渲染-->
     <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%" @selection-change="crud.selectionChangeHandler">
       <el-table-column show-overflow-tooltip align="center" type="selection" width="55" />
-      <el-table-column show-overflow-tooltip align="center" prop="classroomNo" label="编码" />
-      <el-table-column show-overflow-tooltip align="center" prop="capacity" label="容量" />
-      <el-table-column show-overflow-tooltip align="center" prop="teachBuild" label="所属教学区">
+      <el-table-column show-overflow-tooltip align="center" prop="teacherNo" label="编码" />
+      <el-table-column show-overflow-tooltip align="center" prop="name" label="名字" />
+      <el-table-column show-overflow-tooltip align="center" prop="college" label="所属学院">
         <template slot-scope="scope">
-          <span>{{ scope.row.teachBuild.name }}</span>
+          <span>{{ scope.row.college.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip align="center" prop="classroomAttr" label="属性" />
-      <el-table-column show-overflow-tooltip align="center" prop="remarks" label="备注" />
+      <el-table-column show-overflow-tooltip align="center" prop="age" label="年龄" />
+      <el-table-column show-overflow-tooltip align="center" prop="title" label="职称" />
       <el-table-column show-overflow-tooltip align="center" prop="createTime" label="创建日期" />
-      <el-table-column v-if="checkPer(['admin','classroom:edit','classroom:del'])" label="操作" width="150px" align="center">
+      <el-table-column v-if="checkPer(['admin','teacher:edit','teacher:del'])" label="操作" width="150px" align="center">
         <template slot-scope="scope">
           <udOperation
             :data="scope.row"
@@ -68,53 +68,60 @@
 </template>
 
 <script>
-import crudClassroom from '@/api/enter/classroom'
+import crudTeacher from '@/api/enter/teacher'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 import DateRangePicker from '@/components/DateRangePicker'
-import { getAllTeachBuild } from '@/api/enter/teachBuild'
-const defaultForm = { id: null, classroomNo: null, teachBuild: null, capacity: 999, classroomAttr: null, remarks: null }
+import {getAllCollege, getCollegeById} from '@/api/enter/college'
+const defaultForm = { id: null, teacherNo: null, name: null, college: null, age: null, title: null }
 export default {
-  name: 'Classroom',
+  name: 'Teacher',
   components: { pagination, crudOperation, rrOperation, udOperation, DateRangePicker },
   cruds() {
-    return CRUD({ title: '教室', url: 'api/classroom', crudMethod: { ...crudClassroom }})
+    return CRUD({ title: '教师', url: 'api/teacher', crudMethod: { ...crudTeacher }})
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   data() {
     return {
-      teachBuildOptions: [],
+      collegeOptions: [],
       permission: {
-        add: ['admin', 'classroom:add'],
-        edit: ['admin', 'classroom:edit'],
-        del: ['admin', 'classroom:del']
+        add: ['admin', 'teacher:add'],
+        edit: ['admin', 'teacher:edit'],
+        del: ['admin', 'teacher:del']
       },
       rules: {
-        classroomNo: [
+        teacherNo: [
           { required: true, message: '请输入编码', trigger: 'blur' }
         ],
-        capacity: [
-          { required: true, message: '请输入教室容量', trigger: 'blur', type: 'number' }
+        name: [
+          { required: true, message: '请输入名称', trigger: 'blur' }
         ],
-        teachBuild: [
-          { required: true, message: '请选择所属教学区', trigger: 'change' }
+        college: [
+          { required: true, message: '请选择所属学院', trigger: 'change' }
         ]
       }
     }
   },
   mounted() {
-    this.getAllTeachBuild()
+    this.getAllCollege()
   },
   methods: {
-    async getAllTeachBuild() {
-      this.teachBuildOptions = await getAllTeachBuild()
+    async getAllCollege() {
+      this.collegeOptions = await getAllCollege()
+    },
+    async getCollegeById(collegeId) {
+      const { teachBuild: { id, name, teachBuildNo }} = await getCollegeById(collegeId)
+      this.form.college.teachBuild = { id, name, teachBuildNo }
+    },
+    [CRUD.HOOK.beforeToEdit](crud, form) {
+      this.getCollegeById(form.college.id)
     },
     [CRUD.HOOK.beforeSubmit]() {
-      const { id, name, teachBuildNo } = this.form.teachBuild
-      this.form.teachBuild = Object.assign({}, { id, name, teachBuildNo })
+      const { collegeNo, name, id, teachBuild } = this.form.college
+      this.form.college = Object.assign({}, { id, name, collegeNo, teachBuild: { id: teachBuild.id, name: teachBuild.name, teachBuildNo: teachBuild.teachBuildNo }})
     }
   }
 }

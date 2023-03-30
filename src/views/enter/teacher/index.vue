@@ -75,7 +75,7 @@ import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 import DateRangePicker from '@/components/DateRangePicker'
-import {getAllCollege, getCollegeById} from '@/api/enter/college'
+import { getAllCollege, getCollegeById } from '@/api/enter/college'
 const defaultForm = { id: null, teacherNo: null, name: null, college: null, age: null, title: null }
 export default {
   name: 'Teacher',

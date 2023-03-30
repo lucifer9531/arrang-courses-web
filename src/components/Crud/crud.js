@@ -277,7 +277,7 @@ function CRUD(options) {
       return {
         page: crud.page.page - 1,
         size: crud.page.size,
-        sort: crud.sort,
+        // sort: crud.sort,
         ...crud.query,
         ...crud.params
       }

@@ -24,4 +24,11 @@ export function edit(data) {
   })
 }
 
+export function getAllClass() {
+  return request({
+    url: 'api/classes/all',
+    method: 'get'
+  })
+}
+
 export default { add, edit, del }

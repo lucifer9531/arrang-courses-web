@@ -3,9 +3,34 @@
     <!--工具栏-->
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
-        <!-- 搜索 -->
-        <date-range-picker v-model="query.createTime" class="date-item" />
-        <rrOperation />
+        <el-select
+          v-model="semester"
+          clearable
+          size="small"
+          placeholder="请选择学期"
+          class="filter-item"
+          style="width: 130px"
+        >
+          <el-option
+            v-for="item in semesterOptions"
+            :key="item.id"
+            :value="item.semester"
+            :label="item.semester"
+          />
+        </el-select>
+        <el-button
+          slot="right"
+          v-permission="['admin','task:schedule']"
+          :disabled="!semester"
+          :loading="loading"
+          class="filter-item"
+          size="mini"
+          type="warning"
+          icon="el-icon-upload"
+          @click="autoSchedule"
+        >
+          自动排课
+        </el-button>
       </div>
       <crudOperation :permission="permission" />
     </div>
@@ -127,13 +152,11 @@
 </template>
 
 <script>
-import crudClassTask from '@/api/schedule/task'
+import crudClassTask, { autoSchedule } from '@/api/schedule/task'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
-import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
-import DateRangePicker from '@/components/DateRangePicker'
 import { getAllSemester } from '@/api/enter/semester'
 import { getAllCollege, getCollegeById } from '@/api/enter/college'
 import { getAllClass } from '@/api/enter/classes'
@@ -146,7 +169,7 @@ const defaultForm = { id: null, semester: null, collegeNo: null, classNo: null, 
   studentNumber: null, weeksSum: 40, weeksNumber: 4, isFix: '0', classTime: null }
 export default {
   name: 'Task',
-  components: { Treeselect, pagination, crudOperation, rrOperation, udOperation, DateRangePicker },
+  components: { Treeselect, pagination, crudOperation, udOperation },
   dicts: ['task_status'],
   cruds() {
     return CRUD({ title: '教学任务', url: 'api/classTask', crudMethod: { ...crudClassTask }})
@@ -155,6 +178,8 @@ export default {
   data() {
     return {
       treeData,
+      semester: '',
+      loading: false,
       semesterOptions: [],
       collegeOptions: [],
       classOptions: [],
@@ -212,6 +237,18 @@ export default {
     async getCollegeById(id) {
       const { teachers } = await getCollegeById(id)
       this.teacherOptions = teachers
+    },
+    async autoSchedule() {
+      this.loading = true
+      try {
+        await autoSchedule({ semester: this.semester })
+        this.$message.success('排课成功')
+      } catch (err) {
+        this.$message.error('排课失败')
+        throw new Error(err)
+      } finally {
+        this.loading = false
+      }
     },
     changeCollege(val) {
       const temp = this.collegeOptions.filter(item => item.collegeNo === val)

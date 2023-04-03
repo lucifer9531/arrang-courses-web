@@ -24,4 +24,12 @@ export function edit(data) {
   })
 }
 
+export function autoSchedule(data) {
+  return request({
+    url: 'api/classTask/classScheduling',
+    method: 'post',
+    data
+  })
+}
+
 export default { add, edit, del }

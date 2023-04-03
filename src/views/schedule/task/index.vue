@@ -242,9 +242,17 @@ export default {
       this.loading = true
       try {
         await autoSchedule({ semester: this.semester })
-        this.$message.success('排课成功')
+        this.$notify({
+          title: '排课成功',
+          type: 'success',
+          duration: 2500
+        })
       } catch (err) {
-        this.$message.error('排课失败')
+        this.$notify({
+          title: '排课失败',
+          type: 'error',
+          duration: 2500
+        })
         throw new Error(err)
       } finally {
         this.loading = false

@@ -92,9 +92,9 @@ export default {
         ],
         series: [
           {
-            name: '教室数',
-            type: 'line',
-            smooth: true,
+            name: '学院数',
+            type: 'bar',
+            barWidth: '50%',
             data: yData
           }
         ]

@@ -1,76 +1,75 @@
 <template>
-  <el-row :gutter="40" class="panel-group">
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
-        <div class="card-panel-icon-wrapper icon-people">
-          <svg-icon icon-class="peoples" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            New Visits
-          </div>
-          <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num" />
-        </div>
-      </div>
-    </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('messages')">
-        <div class="card-panel-icon-wrapper icon-message">
-          <svg-icon icon-class="message" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            Messages
-          </div>
-          <count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num" />
-        </div>
-      </div>
-    </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('purchases')">
-        <div class="card-panel-icon-wrapper icon-money">
-          <svg-icon icon-class="money" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            Purchases
-          </div>
-          <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num" />
-        </div>
-      </div>
-    </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('shoppings')">
-        <div class="card-panel-icon-wrapper icon-shopping">
-          <svg-icon icon-class="shopping" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            Shoppings
-          </div>
-          <count-to :start-val="0" :end-val="13600" :duration="3600" class="card-panel-num" />
-        </div>
-      </div>
-    </el-col>
-  </el-row>
+  <div>
+    <div class="divBox">
+      <el-row :gutter="24" class="baseInfo">
+        <el-col :xs="12" :sm="12" :lg="6" class="ivu-mb">
+          <el-card :bordered="false" dis-hover :padding="12">
+            <div slot="header" class="row-between-wrapper">
+              <span>教学区数</span>
+            </div>
+            <div class="content">
+              <span class="content-number spBlock mb15">
+                <count-to :start-val="0" :end-val="data && data.teachBuildCount" :duration="2600" class="card-panel-num" />
+              </span>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :xs="12" :sm="12" :lg="6" class="ivu-mb">
+          <el-card :bordered="false" dis-hover :padding="12">
+            <div slot="header" class="row-between-wrapper">
+              <span>学院数</span>
+            </div>
+            <div class="content">
+              <span class="content-number spBlock mb15">
+                <count-to :start-val="0" :end-val="data && data.collegeCount" :duration="3000" class="card-panel-num" />
+              </span>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :xs="12" :sm="12" :lg="6" class="ivu-mb">
+          <el-card :bordered="false" dis-hover :padding="12">
+            <div slot="header" class="row-between-wrapper">
+              <span>班级数</span>
+            </div>
+            <div class="content">
+              <span class="content-number spBlock mb15">
+                <count-to :start-val="0" :end-val="data && data.classesCount" :duration="3200" class="card-panel-num" />
+              </span>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :xs="12" :sm="12" :lg="6" class="ivu-mb">
+          <el-card :bordered="false" dis-hover :padding="12">
+            <div slot="header" class="row-between-wrapper">
+              <span>课程数</span>
+            </div>
+            <div class="content">
+              <span class="content-number spBlock mb15">
+                <count-to :start-val="0" :end-val="data && data.courseData" :duration="3600" class="card-panel-num" />
+              </span>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+  </div>
 </template>
-
 <script>
 import CountTo from 'vue-count-to'
-
 export default {
   components: {
     CountTo
   },
-  methods: {
-    handleSetLineChartData(type) {
-      this.$emit('handleSetLineChartData', type)
+  props: {
+    data: {
+      type: Object,
+      default: () => {}
     }
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style rel="stylesheet/scss" lang="scss" scoped>
 .panel-group {
   margin-top: 18px;
 
@@ -86,30 +85,8 @@ export default {
     overflow: hidden;
     color: #666;
     background: #fff;
-    box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
-    border-color: rgba(0, 0, 0, .05);
-
-    &:hover {
-      .card-panel-icon-wrapper {
-        color: #fff;
-      }
-
-      .icon-people {
-        background: #40c9c6;
-      }
-
-      .icon-message {
-        background: #36a3f7;
-      }
-
-      .icon-money {
-        background: #f4516c;
-      }
-
-      .icon-shopping {
-        background: #34bfa3
-      }
-    }
+    box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.05);
 
     .icon-people {
       color: #40c9c6;
@@ -124,7 +101,7 @@ export default {
     }
 
     .icon-shopping {
-      color: #34bfa3
+      color: #34bfa3;
     }
 
     .card-panel-icon-wrapper {
@@ -160,7 +137,7 @@ export default {
   }
 }
 
-@media (max-width:550px) {
+@media (max-width: 550px) {
   .card-panel-description {
     display: none;
   }
@@ -177,5 +154,40 @@ export default {
       float: none !important;
     }
   }
+}
+.baseInfo {
+  ::v-deep .el-card__header {
+    padding: 15px 20px !important;
+  }
+}
+
+.ivu-mb {
+  margin-bottom: 10px;
+}
+.up,
+.el-icon-caret-top {
+  color: #f5222d;
+  font-size: 12px;
+  opacity: 1 !important;
+}
+
+.down,
+.el-icon-caret-bottom {
+  color: #39c15b;
+  font-size: 12px;
+  /*opacity: 100% !important;*/
+}
+
+.content {
+  &-number {
+    font-size: 30px;
+  }
+  &-time {
+    font-size: 14px;
+    /*color: #8C8C8C;*/
+  }
+}
+.spBlock {
+  display: block;
 }
 </style>

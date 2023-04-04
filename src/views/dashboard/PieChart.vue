@@ -5,9 +5,9 @@
 <script>
 import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
-import { debounce } from '@/utils'
-
+import resize from './mixins/resize'
 export default {
+  mixins: [resize],
   props: {
     className: {
       type: String,
@@ -19,7 +19,15 @@ export default {
     },
     height: {
       type: String,
-      default: '300px'
+      default: '400px'
+    },
+    autoResize: {
+      type: Boolean,
+      default: true
+    },
+    chartData: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -27,28 +35,40 @@ export default {
       chart: null
     }
   },
-  mounted() {
-    this.initChart()
-    this.__resizeHandler = debounce(() => {
-      if (this.chart) {
-        this.chart.resize()
+  watch: {
+    chartData: {
+      deep: true,
+      handler(val) {
+        this.setOptions(val)
       }
-    }, 100)
-    window.addEventListener('resize', this.__resizeHandler)
+    }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.initChart()
+    })
   },
   beforeDestroy() {
     if (!this.chart) {
       return
     }
-    window.removeEventListener('resize', this.__resizeHandler)
     this.chart.dispose()
     this.chart = null
   },
   methods: {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
-
+    },
+    setOptions() {
+      const { legendData, seriesData } = this.chartData
       this.chart.setOption({
+        grid: {
+          left: 10,
+          right: 10,
+          bottom: 20,
+          top: 30,
+          containLabel: true
+        },
         tooltip: {
           trigger: 'item',
           formatter: '{a} <br/>{b} : {c} ({d}%)'
@@ -56,23 +76,17 @@ export default {
         legend: {
           left: 'center',
           bottom: '10',
-          data: ['Industries', 'Technology', 'Forex', 'Gold', 'Forecasts']
+          data: legendData
         },
         calculable: true,
         series: [
           {
-            name: 'WEEKLY WRITE ARTICLES',
+            name: '教师数',
             type: 'pie',
             roseType: 'radius',
             radius: [15, 95],
             center: ['50%', '38%'],
-            data: [
-              { value: 320, name: 'Industries' },
-              { value: 240, name: 'Technology' },
-              { value: 149, name: 'Forex' },
-              { value: 100, name: 'Gold' },
-              { value: 59, name: 'Forecasts' }
-            ],
+            data: seriesData,
             animationEasing: 'cubicInOut',
             animationDuration: 2600
           }

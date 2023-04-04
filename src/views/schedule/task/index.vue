@@ -166,7 +166,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { treeData } from '@/views/schedule/task/data'
 
 const defaultForm = { id: null, semester: null, collegeNo: null, classNo: null, courseNo: null, teacherNo: null, courseAttr: null,
-  studentNumber: null, weeksSum: 40, weeksNumber: 4, isFix: '0', classTime: null }
+  studentNumber: null, weeksSum: 40, weeksNumber: 4, isFix: '1', classTime: null }
 export default {
   name: 'Task',
   components: { Treeselect, pagination, crudOperation, udOperation },
@@ -278,7 +278,7 @@ export default {
       return list
     },
     [CRUD.HOOK.beforeSubmit]() {
-      if (!this.form.classTime.length) return
+      if (!this.form.classTime) return
       this.form.classTime = this.form.classTime.toString().replace(/,/g, '')
     },
     [CRUD.HOOK.beforeToEdit]() {

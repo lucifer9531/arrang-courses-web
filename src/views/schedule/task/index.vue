@@ -136,7 +136,11 @@
           <span>{{ dict.label.task_status[scope.row.isFix] }}</span>
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip align="center" prop="classTime" label="上课时间" />
+      <el-table-column show-overflow-tooltip align="center" prop="classTime" label="上课时间">
+        <template slot-scope="scope">
+          <span>{{ scope.row | classTimeFilter }}</span>
+        </template>
+      </el-table-column>
       <el-table-column v-if="checkPer(['admin','task:edit','task:del'])" label="操作" width="150px" align="center">
         <template slot-scope="scope">
           <udOperation
@@ -175,6 +179,24 @@ export default {
     return CRUD({ title: '教学任务', url: 'api/classTask', crudMethod: { ...crudClassTask }})
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
+  // eslint-disable-next-line vue/order-in-components
+  filters: {
+    classTimeFilter(data) {
+      if (!data.classTime) return
+      const temp = data.classTime.match(/.{1,2}/g)
+      const result = []
+      treeData.forEach(item => {
+        item.children.forEach(child => {
+          temp.forEach(it => {
+            if (it === child.id) {
+              result.push(`${item.label}${child.label}`)
+            }
+          })
+        })
+      })
+      return result.join(',')
+    }
+  },
   data() {
     return {
       treeData,

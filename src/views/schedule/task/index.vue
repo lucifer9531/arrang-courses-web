@@ -209,7 +209,7 @@ export default {
       teacherOptions: [],
       permission: {
         add: ['admin', 'task:add'],
-        edit: ['admin', 'task:edit'],
+        edit: ['task:edit'],
         del: ['admin', 'task:del']
       },
       rules: {

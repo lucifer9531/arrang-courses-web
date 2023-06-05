@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function add(data) {
   return request({
-    url: 'api/classroom',
+    url: 'api/classroomOccupancy',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function add(data) {
 
 export function del(ids) {
   return request({
-    url: 'api/classroom',
+    url: 'api/classroomOccupancy',
     method: 'delete',
     data: ids
   })
@@ -18,16 +18,9 @@ export function del(ids) {
 
 export function edit(data) {
   return request({
-    url: 'api/classroom',
+    url: 'api/classroomOccupancy',
     method: 'put',
     data
-  })
-}
-
-export function getAllClassRoom() {
-  return request({
-    url: 'api/classroom/all',
-    method: 'get'
   })
 }
 
